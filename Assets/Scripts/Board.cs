@@ -91,34 +91,50 @@ public class Board : MonoBehaviour {
 
 	private void updatePosition(Unit entity)
 	{
-		TryUpdatePosition(entity, board);
-		TryUpdatePosition(entity, pawns);
+		bool updated = false;
+		updated |= TryUpdatePosition(entity, board);
+		updated |= TryUpdatePosition(entity, pawns);
+
+		if (!updated)
+		{
+			Debug.LogError("Failed to update unit at position: " + entity.transform.position);
+		}
 	}
 
 	private void updateDestroyed(Unit entity)
 	{
-		TryRemove(entity, board);
-		TryRemove(entity, pawns);
+		bool destroyed = false;
+		destroyed |= TryRemove(entity, board);
+		destroyed |= TryRemove(entity, pawns);
+
+		if (!destroyed)
+		{
+			Debug.LogError("Failed to remove unit at position: " + entity.transform.position);
+		}
 	}
 
-	private static void TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
+	private static bool TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
 	{
 		T unit;
-		Vector3 pos = entity.transform.position;
+		Vector3 pos = Unit.SnapPosition(entity.transform.position);
 		if (dict.TryGetValue(pos, out unit))
 		{
 			dict.Remove(pos);
 			dict[entity.Target] = unit;
+			return true;
 		}
+		return false;
 	}
 
-	private static void TryRemove<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
+	private static bool TryRemove<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
 	{
 		T unit;
-		Vector3 pos = entity.transform.position;
+		Vector3 pos = Unit.SnapPosition(entity.transform.position);
 		if (dict.TryGetValue(pos, out unit))
 		{
 			dict.Remove(pos);
+			return true;
 		}
+		return false;
 	}
 }

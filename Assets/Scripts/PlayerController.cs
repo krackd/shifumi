@@ -20,11 +20,11 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Input.GetButtonDown("Fire1"))
 		{
-			pawnPressed = FindPawnUnderMouse().GetComponent<Pawn>();
+			pawnPressed = FindGameObjectUnderMouse().GetComponent<Pawn>();
 		}
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
 		{
-			GameObject go = FindPawnUnderMouse();
+			GameObject go = FindGameObjectUnderMouse();
 			Pawn pawnRelease = go.GetComponent<Pawn>();
 			GridCell cellRelease = go.GetComponent<GridCell>();
 			if (pawnRelease != null && Unit.IsDistanceOne(pawnPressed, pawnRelease))
@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
-	private GameObject FindPawnUnderMouse()
+	private GameObject FindGameObjectUnderMouse()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;

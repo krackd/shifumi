@@ -92,6 +92,11 @@ public class Unit : MonoBehaviour
 		JumpToPosition(snappedPosition);
 	}
 
+	public static Vector3 SnapPosition(Vector3 pos)
+	{
+		return SnapPosition(pos, pos.y);
+	}
+
 	public static Vector3 SnapPosition(Vector3 pos, float layer)
 	{
 		Vector3 snapped = pos;
