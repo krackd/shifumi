@@ -57,6 +57,7 @@ GameObject:
   - component: {fileID: 4815946606300440}
   - component: {fileID: 33823921988887350}
   - component: {fileID: 23235480482088680}
+  - component: {fileID: 114315874141491496}
   m_Layer: 9
   m_Name: PawnModel
   m_TagString: Untagged
@@ -84,7 +85,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1719770044425034}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4815946606300440}
@@ -226,6 +227,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a368912532d099547bc7457538bb4586, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114315874141491496
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1894052386101574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52afbe67dc7f5784b91d4e9d89dba2f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114931977845490936
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -239,4 +251,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SmoothMoveSpeed: 10
   TargetReachedThresold: 0.0001
+  OnTargetChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnitEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+  OnDestroyEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnitEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   type: 2
+  player: {fileID: 0}

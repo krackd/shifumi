@@ -11,13 +11,23 @@ public class Pawn : Unit {
 		ROCK
 	}
 	public Type type;
-	
+
+	public Player player;
+
 	private SpritePlane spritePlane;
+	private PawnModel pawnModel;
 
 	// Use this for initialization
 	public override void Start () {
 		base.Start();
 		spritePlane = GetComponentInChildren<SpritePlane>();
+		pawnModel = GetComponentInChildren<PawnModel>();
+
+		Renderer renderer = pawnModel.GetComponent<Renderer>();
+		Material pawnmat = renderer.sharedMaterial;
+		Material matCopy = Instantiate(pawnmat);
+		matCopy.color = player.PlayerColor;
+		renderer.sharedMaterial = matCopy;
 	}
 
 	// Update is called once per frame
@@ -27,7 +37,7 @@ public class Pawn : Unit {
 	
 	public void Attack(Pawn other)
 	{
-		if (isBeating(other))
+		if (isOpponent(other) && isBeating(other))
 		{
 			// Destorying the opponent and take his place
 			Target = other.transform.position;
@@ -44,6 +54,11 @@ public class Pawn : Unit {
 	{
 		Renderer meshRenderer = spritePlane.GetComponent<Renderer>();
 		meshRenderer.sharedMaterial = mat;
+	}
+
+	private bool isOpponent(Pawn other)
+	{
+		return other.player.PlayerColor != player.PlayerColor;
 	}
 
 	private bool isBeating(Pawn other)
