@@ -35,6 +35,11 @@ public class Pawn : Unit {
 		}
 	}
 
+	public void Move(GridCell cell)
+	{
+		Target = SnapPosition(cell.transform.position, transform.position.y);
+	}
+
 	public void SetMaterial(Material mat)
 	{
 		Renderer meshRenderer = spritePlane.GetComponent<Renderer>();

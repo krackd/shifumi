@@ -1,13 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
 
-public class Unit : MonoBehaviour {
+[System.Serializable]
+public class UnitEvent : UnityEvent<Unit> { }
 
+public class Unit : MonoBehaviour
+{
 	public float SmoothMoveSpeed = 5f;
 	public float TargetReachedThresold = 0.0001f;
 
-	public Vector3 Target { get { return targetPosition; } set { targetPosition = value; shouldMoveToTarget = true; } }
+	public UnitEvent OnTargetChangedEvent;
+	public UnitEvent OnDestroyEvent;
+
+	public Vector3 Target
+	{
+		get
+		{
+			return targetPosition;
+		}
+
+		set
+		{
+			targetPosition = value;
+			shouldMoveToTarget = true;
+			OnTargetChangedEvent.Invoke(this);
+		}
+	}
+
 	private Vector3 targetPosition;
 	private bool shouldMoveToTarget = false;
 
@@ -22,6 +41,13 @@ public class Unit : MonoBehaviour {
 		{
 			MoveToTarget();
 		}
+	}
+
+	private void OnDestroy()
+	{
+		OnDestroyEvent.Invoke(this);
+		OnTargetChangedEvent.RemoveAllListeners();
+		OnDestroyEvent.RemoveAllListeners();
 	}
 
 	private void MoveToTarget()
@@ -44,7 +70,6 @@ public class Unit : MonoBehaviour {
 
 	private void SetTargetReached()
 	{
-		Debug.Log("Target reached!");
 		transform.position = targetPosition;
 		shouldMoveToTarget = false;
 	}
@@ -74,5 +99,17 @@ public class Unit : MonoBehaviour {
 		snapped.y = layer;
 		snapped.z = (int)pos.z;
 		return snapped;
+	}
+
+	public static float SqrMagnitude(Unit a, Unit b, float layer)
+	{
+		Vector3 posA = SnapPosition(a.transform.position, layer);
+		Vector3 posB = SnapPosition(b.transform.position, layer);
+		return Vector3.SqrMagnitude(posA - posB);
+	}
+
+	public static bool IsDistanceOne(Unit a, Unit b)
+	{
+		return SqrMagnitude(a, b, a.transform.position.y) == 1;
 	}
 }

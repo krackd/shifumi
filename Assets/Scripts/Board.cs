@@ -22,6 +22,14 @@ public class Board : MonoBehaviour {
 		return null;
 	}
 
+	public bool IsFree(GridCell cell)
+	{
+		Pawn pawn;
+		Vector3 pos = Unit.SnapPosition(cell.transform.position, PawnsLayerY);
+		bool hasPawn = pawns.TryGetValue(pos, out pawn);
+		return !hasPawn;
+	}
+
 	// Use this for initialization
 	void Start ()
 	{
@@ -63,11 +71,11 @@ public class Board : MonoBehaviour {
 
 	private void initializeDict<T>(Dictionary<Vector3, T> dict, float layer) where T : Unit
 	{
-		T[] cells = GetComponentsInChildren<T>();
-		foreach (T cell in cells)
+		T[] units = GetComponentsInChildren<T>();
+		foreach (T unit in units)
 		{
-			cell.Snap(layer);
-			Vector3 snapped = cell.transform.position;
+			unit.Snap(layer);
+			Vector3 snapped = unit.transform.position;
 			T previousCell;
 			bool previousCellFound = dict.TryGetValue(snapped, out previousCell);
 			if (previousCellFound)
@@ -75,7 +83,42 @@ public class Board : MonoBehaviour {
 				Debug.Log("Destroying " + previousCell.gameObject);
 				Destroy(previousCell.gameObject);
 			}
-			dict[snapped] = cell;
+			dict[snapped] = unit;
+			unit.OnTargetChangedEvent.AddListener(updatePosition);
+			unit.OnDestroyEvent.AddListener(updateDestroyed);
+		}
+	}
+
+	private void updatePosition(Unit entity)
+	{
+		TryUpdatePosition(entity, board);
+		TryUpdatePosition(entity, pawns);
+	}
+
+	private void updateDestroyed(Unit entity)
+	{
+		TryRemove(entity, board);
+		TryRemove(entity, pawns);
+	}
+
+	private static void TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
+	{
+		T unit;
+		Vector3 pos = entity.transform.position;
+		if (dict.TryGetValue(pos, out unit))
+		{
+			dict.Remove(pos);
+			dict[entity.Target] = unit;
+		}
+	}
+
+	private static void TryRemove<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
+	{
+		T unit;
+		Vector3 pos = entity.transform.position;
+		if (dict.TryGetValue(pos, out unit))
+		{
+			dict.Remove(pos);
 		}
 	}
 }

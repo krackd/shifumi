@@ -20,7 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4767424406744202}
   - component: {fileID: 114411882445702798}
-  m_Layer: 0
+  - component: {fileID: 65153323467626642}
+  m_Layer: 10
   m_Name: GridCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +38,7 @@ GameObject:
   - component: {fileID: 4267803191329106}
   - component: {fileID: 33420380444601408}
   - component: {fileID: 23856401526766180}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GridCellModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,6 +114,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1833667180781092}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &65153323467626642
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1412139347089730}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114411882445702798
 MonoBehaviour:
   m_ObjectHideFlags: 1

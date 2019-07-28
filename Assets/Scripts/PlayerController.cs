@@ -20,27 +20,33 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Input.GetButtonDown("Fire1"))
 		{
-			pawnPressed = FindPawnUnderMouse();
+			pawnPressed = FindPawnUnderMouse().GetComponent<Pawn>();
 		}
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
 		{
-			Pawn pawnRelease = FindPawnUnderMouse();
-			if (pawnRelease != null)
+			GameObject go = FindPawnUnderMouse();
+			Pawn pawnRelease = go.GetComponent<Pawn>();
+			GridCell cellRelease = go.GetComponent<GridCell>();
+			if (pawnRelease != null && Unit.IsDistanceOne(pawnPressed, pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
+			}
+			else if (cellRelease != null && board.IsFree(cellRelease) && Unit.IsDistanceOne(pawnPressed, cellRelease))
+			{
+				pawnPressed.Move(cellRelease);
 			}
 
 			pawnPressed = null;
 		}
 	}
 
-	private Pawn FindPawnUnderMouse()
+	private GameObject FindPawnUnderMouse()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
 		if (Physics.Raycast(ray, out hit, PawnLayer))
 		{
-			return hit.collider.gameObject.GetComponent<Pawn>();
+			return hit.collider.gameObject;
 		}
 
 		return null;
