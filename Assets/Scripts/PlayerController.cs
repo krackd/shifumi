@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
+	public Player player;
 	public LayerMask PawnLayer;
 
 	private Board board;
@@ -20,14 +21,15 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Input.GetButtonDown("Fire1"))
 		{
-			pawnPressed = FindGameObjectUnderMouse().GetComponent<Pawn>();
+			Pawn pawn = FindGameObjectUnderMouse().GetComponent<Pawn>();
+			pawnPressed = pawn != null && IsPlayerPawn(pawn) ? pawn : null;
 		}
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
 		{
 			GameObject go = FindGameObjectUnderMouse();
 			Pawn pawnRelease = go.GetComponent<Pawn>();
 			GridCell cellRelease = go.GetComponent<GridCell>();
-			if (pawnRelease != null && Unit.IsDistanceOne(pawnPressed, pawnRelease))
+			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && Unit.IsDistanceOne(pawnPressed, pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
 			}
@@ -50,5 +52,15 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		return null;
+	}
+
+	private bool IsPlayerPawn(Pawn pawn)
+	{
+		return player.IsSamePlayer(pawn.player);
+	}
+
+	private bool IsEnemyPawn(Pawn pawn)
+	{
+		return !player.IsSamePlayer(pawn.player);
 	}
 }

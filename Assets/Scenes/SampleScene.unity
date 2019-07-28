@@ -3717,6 +3717,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b2aba87e3d193748a96f92883710579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1508647212}
   PawnLayer:
     serializedVersion: 2
     m_Bits: 1536

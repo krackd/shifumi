@@ -58,7 +58,7 @@ public class Pawn : Unit {
 
 	private bool isOpponent(Pawn other)
 	{
-		return other.player.PlayerColor != player.PlayerColor;
+		return !player.IsSamePlayer(other.player);
 	}
 
 	private bool isBeating(Pawn other)
