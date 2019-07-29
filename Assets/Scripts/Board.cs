@@ -12,14 +12,10 @@ public class Board : MonoBehaviour {
 
 	public GridCell GetCell(Vector3 position)
 	{
-		Vector3 snapped = Unit.SnapPosition(position, 0);
-		GridCell previousCell;
-		bool previousCellFound = board.TryGetValue(snapped, out previousCell);
-		if (previousCellFound)
-		{
-			return previousCell;
-		}
-		return null;
+		Vector3 snapped = Unit.SnapPosition(position, BoardLayerY);
+		GridCell cell;
+		bool cellFound = board.TryGetValue(snapped, out cell);
+		return cellFound ? cell : null;
 	}
 
 	public bool IsFree(GridCell cell)

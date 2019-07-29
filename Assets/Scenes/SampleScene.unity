@@ -2178,6 +2178,11 @@ Prefab:
       propertyPath: m_LocalPosition.z
       value: 0.35
       objectReference: {fileID: 0}
+    - target: {fileID: 114192996570936440, guid: 2698d408036712c4b89c92902385304c,
+        type: 2}
+      propertyPath: SelectableLayer.m_Bits
+      value: 1536
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2698d408036712c4b89c92902385304c, type: 2}
   m_IsPrefabAsset: 0

@@ -7,13 +7,15 @@ public class PlayerController : MonoBehaviour {
 	public Player[] Players;
 
 	[Header("Selection")]
-	public LayerMask PawnLayer;
+	public LayerMask SelectableLayer;
 
 	[Header("Player Turn Text")]
 	public TextMeshPro PlayerTurnText;
 
 	private int playerIndex = 0;
 	private Player Player { get { return Players[playerIndex]; } }
+	private bool IsSoloGame { get { return Players.Length == 1; } }
+	private bool IsMultiplayerGame { get { return Players.Length > 1; } }
 
 	private Board board;
 
@@ -63,14 +65,14 @@ public class PlayerController : MonoBehaviour {
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
 		{
 			GameObject go = FindGameObjectUnderMouse();
-			Pawn pawnRelease = go.GetComponent<Pawn>();
+			Pawn pawnRelease = go != null ? go.GetComponent<Pawn>() : null;
 			GridCell cellRelease = go.GetComponent<GridCell>();
-			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && Unit.IsDistanceOne(pawnPressed, pawnRelease))
+			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
 				isTurnDone = true;
 			}
-			else if (cellRelease != null && board.IsFree(cellRelease) && Unit.IsDistanceOne(pawnPressed, cellRelease))
+			else if (cellRelease != null && board.IsFree(cellRelease) && CanReach(pawnPressed, cellRelease))
 			{
 				pawnPressed.Move(cellRelease);
 				isTurnDone = true;
@@ -82,11 +84,42 @@ public class PlayerController : MonoBehaviour {
 		return isTurnDone;
 	}
 
+	private bool CanReach(Unit a, Unit b)
+	{
+		return IsMultiplayerGame
+			? Unit.IsDistanceOne(a, b)
+			: IsPathFree(a, b);
+	}
+
+	private bool IsPathFree(Unit a, Unit b)
+	{
+		Vector3 aPos = Unit.SnapPosition(a.transform.position, board.BoardLayerY);
+		Vector3 bPos = Unit.SnapPosition(b.transform.position, board.BoardLayerY);
+		Vector3 start = aPos;
+		Vector3 diff = bPos - aPos;
+		float diffSqrMag = diff.sqrMagnitude;
+		Vector3 direction = bPos - aPos;
+		Vector3 end = aPos + direction;
+		direction.Normalize();
+
+		Vector3 offset = direction;
+		while (offset.sqrMagnitude < diffSqrMag)
+		{
+			GridCell cell = board.GetCell(start + offset);
+			if (cell == null || !board.IsFree(cell))
+			{
+				return false;
+			}
+			offset += direction;
+		}
+		return true;
+	}
+
 	private GameObject FindGameObjectUnderMouse()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, PawnLayer.value))
+		if (Physics.Raycast(ray, out hit, SelectableLayer.value))
 		{
 			return hit.collider.gameObject;
 		}
