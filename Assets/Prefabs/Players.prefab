@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4165947324938176}
   - component: {fileID: 114716325124527644}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerOne
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -72,7 +72,7 @@ GameObject:
   - component: {fileID: 4409361166943662}
   - component: {fileID: 114784658620601060}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: PlayerTwo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4010535686072396
 Transform:
   m_ObjectHideFlags: 1
@@ -286,11 +286,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 1
+  m_havePropertiesChanged: 0
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 1
+  m_isInputParsingRequired: 0
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 23931318019307840}
@@ -317,10 +317,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Players:
   - {fileID: 114716325124527644}
+  - {fileID: 114784658620601060}
   SelectableLayer:
     serializedVersion: 2
     m_Bits: 1536
-  PathFindingStepFactor: 0.75
+  PathFindingStepFactor: 0.7
   PlayerTurnText: {fileID: 114137236798913064}
 --- !u!114 &114716325124527644
 MonoBehaviour:

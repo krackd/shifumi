@@ -18,16 +18,28 @@ public class Pawn : Unit {
 	private PawnModel pawnModel;
 
 	// Use this for initialization
-	public override void Start () {
+	public override void Start ()
+	{
 		base.Start();
 		spritePlane = GetComponentInChildren<SpritePlane>();
 		pawnModel = GetComponentInChildren<PawnModel>();
 
 		Renderer renderer = pawnModel.GetComponent<Renderer>();
-		Material pawnmat = renderer.sharedMaterial;
-		Material matCopy = Instantiate(pawnmat);
-		matCopy.color = player.PlayerColor;
-		renderer.sharedMaterial = matCopy;
+		Material pawnmat = getPawnMaterial();
+		pawnmat.color = player.PlayerColor;
+		renderer.sharedMaterial = pawnmat;
+	}
+
+	private Material getPawnMaterial()
+	{
+		Material pawnMaterial = player.PawnMaterial;
+		if (pawnMaterial == null)
+		{
+			Renderer renderer = pawnModel.GetComponent<Renderer>();
+			pawnMaterial = Instantiate(renderer.sharedMaterial);
+			player.PawnMaterial = pawnMaterial;
+		}
+		return pawnMaterial;
 	}
 
 	// Update is called once per frame

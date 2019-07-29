@@ -58,7 +58,6 @@ GameObject:
   - component: {fileID: 33868489746397446}
   - component: {fileID: 23517462491070404}
   - component: {fileID: 114620027962626342}
-  - component: {fileID: 114300014996765314}
   m_Layer: 9
   m_Name: PawnModel
   m_TagString: Untagged
@@ -226,17 +225,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a368912532d099547bc7457538bb4586, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114300014996765314
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1995863468139364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52afbe67dc7f5784b91d4e9d89dba2f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114305639428122654

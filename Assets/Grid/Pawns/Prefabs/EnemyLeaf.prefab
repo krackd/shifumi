@@ -58,7 +58,6 @@ GameObject:
   - component: {fileID: 33541923529304164}
   - component: {fileID: 23979127819895674}
   - component: {fileID: 114439366827089916}
-  - component: {fileID: 114622694455005574}
   m_Layer: 9
   m_Name: PawnModel
   m_TagString: Untagged
@@ -218,17 +217,6 @@ BoxCollider:
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114439366827089916
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1941807003484376}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52afbe67dc7f5784b91d4e9d89dba2f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114622694455005574
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
