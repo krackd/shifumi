@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
-	public Player player;
+	[Header("Players")]
+	public Player[] Players;
+
 	public LayerMask PawnLayer;
+
+	private int playerIndex = 0;
+	private Player Player { get { return Players[playerIndex]; } }
 
 	private Board board;
 
@@ -19,9 +22,28 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
+		bool isTurnDone = UpdateTurn();
+		if (isTurnDone)
+		{
+			UpdatePlayerIndex();
+		}
+	}
+
+	private void UpdatePlayerIndex()
+	{
+		playerIndex++;
+		playerIndex %= Players.Length;
+		Debug.Log("playerIndex: " + playerIndex);
+	}
+
+	private bool UpdateTurn()
+	{
+		bool isTurnDone = false;
+
 		if (Input.GetButtonDown("Fire1"))
 		{
-			Pawn pawn = FindGameObjectUnderMouse().GetComponent<Pawn>();
+			GameObject go = FindGameObjectUnderMouse();
+			Pawn pawn = go != null ? go.GetComponent<Pawn>() : null;
 			pawnPressed = pawn != null && IsPlayerPawn(pawn) ? pawn : null;
 		}
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
@@ -32,14 +54,18 @@ public class PlayerController : MonoBehaviour {
 			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && Unit.IsDistanceOne(pawnPressed, pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
+				isTurnDone = true;
 			}
 			else if (cellRelease != null && board.IsFree(cellRelease) && Unit.IsDistanceOne(pawnPressed, cellRelease))
 			{
 				pawnPressed.Move(cellRelease);
+				isTurnDone = true;
 			}
 
 			pawnPressed = null;
 		}
+
+		return isTurnDone;
 	}
 
 	private GameObject FindGameObjectUnderMouse()
@@ -56,11 +82,11 @@ public class PlayerController : MonoBehaviour {
 
 	private bool IsPlayerPawn(Pawn pawn)
 	{
-		return player.IsSamePlayer(pawn.player);
+		return Player.IsSamePlayer(pawn.player);
 	}
 
 	private bool IsEnemyPawn(Pawn pawn)
 	{
-		return !player.IsSamePlayer(pawn.player);
+		return !Player.IsSamePlayer(pawn.player);
 	}
 }
