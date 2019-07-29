@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 
 	[Header("Selection")]
 	public LayerMask SelectableLayer;
+	public float PathFindingStepFactor = 0.75f;
 
 	[Header("Player Turn Text")]
 	public TextMeshPro PlayerTurnText;
@@ -66,7 +67,7 @@ public class PlayerController : MonoBehaviour {
 		{
 			GameObject go = FindGameObjectUnderMouse();
 			Pawn pawnRelease = go != null ? go.GetComponent<Pawn>() : null;
-			GridCell cellRelease = go.GetComponent<GridCell>();
+			GridCell cellRelease = go != null ? go.GetComponent<GridCell>() : null;
 			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
@@ -99,7 +100,7 @@ public class PlayerController : MonoBehaviour {
 		Vector3 diff = bPos - aPos;
 		float diffSqrMag = diff.sqrMagnitude;
 		Vector3 direction = bPos - aPos;
-		Vector3 end = aPos + direction;
+		Vector3 end = aPos + direction * PathFindingStepFactor;
 		direction.Normalize();
 
 		Vector3 offset = direction;

@@ -2151,37 +2151,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 33332433225429802, guid: 2698d408036712c4b89c92902385304c,
-        type: 2}
-      propertyPath: m_Mesh
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1334351830785880, guid: 2698d408036712c4b89c92902385304c, type: 2}
-      propertyPath: m_Name
-      value: Players
-      objectReference: {fileID: 0}
-    - target: {fileID: 114137236798913064, guid: 2698d408036712c4b89c92902385304c,
-        type: 2}
-      propertyPath: m_havePropertiesChanged
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114137236798913064, guid: 2698d408036712c4b89c92902385304c,
-        type: 2}
-      propertyPath: m_isInputParsingRequired
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1835363632544722, guid: 2698d408036712c4b89c92902385304c, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4010535686072396, guid: 2698d408036712c4b89c92902385304c, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0.35
-      objectReference: {fileID: 0}
     - target: {fileID: 114192996570936440, guid: 2698d408036712c4b89c92902385304c,
         type: 2}
-      propertyPath: SelectableLayer.m_Bits
-      value: 1536
+      propertyPath: PathFindingStepFactor
+      value: 0.7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2698d408036712c4b89c92902385304c, type: 2}
