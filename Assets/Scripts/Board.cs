@@ -103,14 +103,7 @@ public class Board : MonoBehaviour {
 
 	private void updateDestroyed(Unit entity)
 	{
-		bool destroyed = false;
-		destroyed |= TryRemove(entity, board);
-		destroyed |= TryRemove(entity, pawns);
-
-		if (!destroyed)
-		{
-			Debug.LogError("Failed to remove unit at position: " + entity.transform.position);
-		}
+		
 	}
 
 	private static bool TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
