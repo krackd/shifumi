@@ -1,11 +1,16 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
 
 	[Header("Players")]
 	public Player[] Players;
 
+	[Header("Selection")]
 	public LayerMask PawnLayer;
+
+	[Header("Player Turn Text")]
+	public TextMeshPro PlayerTurnText;
 
 	private int playerIndex = 0;
 	private Player Player { get { return Players[playerIndex]; } }
@@ -17,6 +22,7 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		board = GameObject.Find("Board").GetComponent<Board>();
+		UpdatePlayerTurnColor();
 	}
 
 	// Update is called once per frame
@@ -33,7 +39,15 @@ public class PlayerController : MonoBehaviour {
 	{
 		playerIndex++;
 		playerIndex %= Players.Length;
-		Debug.Log("playerIndex: " + playerIndex);
+		UpdatePlayerTurnColor();
+	}
+
+	private void UpdatePlayerTurnColor()
+	{
+		if (PlayerTurnText != null)
+		{
+			PlayerTurnText.faceColor = Player.PlayerColor;
+		}	
 	}
 
 	private bool UpdateTurn()
