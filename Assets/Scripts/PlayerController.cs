@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour {
 			GameObject go = FindGameObjectUnderMouse();
 			Pawn pawnRelease = go != null ? go.GetComponent<Pawn>() : null;
 			GridCell cellRelease = go != null ? go.GetComponent<GridCell>() : null;
-			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease))
+			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease) && pawnPressed.CanBeat(pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
 				isTurnDone = true;

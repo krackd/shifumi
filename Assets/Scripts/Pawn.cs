@@ -49,7 +49,7 @@ public class Pawn : Unit {
 	
 	public void Attack(Pawn other)
 	{
-		if (isOpponent(other) && isBeating(other))
+		if (isOpponent(other) && CanBeat(other))
 		{
 			// Destorying the opponent and take his place
 			Target = other.transform.position;
@@ -73,7 +73,7 @@ public class Pawn : Unit {
 		return !player.IsSamePlayer(other.player);
 	}
 
-	private bool isBeating(Pawn other)
+	public bool CanBeat(Pawn other)
 	{
 		switch (type)
 		{
