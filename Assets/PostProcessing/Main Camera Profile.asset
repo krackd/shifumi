@@ -63,31 +63,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
   - {fileID: 6990157292417798802}
-  - {fileID: 2338067337864179883}
   - {fileID: 7059252015008584986}
   - {fileID: -6681735945168416033}
---- !u!114 &2338067337864179883
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76325b82309654f4ea6230cd059469e7, type: 3}
-  m_Name: PostLinerFree
-  m_EditorClassIdentifier: 
-  active: 1
-  enabled:
-    overrideState: 1
-    value: 1
-  outlineColor:
-    overrideState: 1
-    value: {r: 1, g: 0.6192257, b: 0, a: 1}
-  finalBlend:
-    overrideState: 0
-    value: 1
 --- !u!114 &6990157292417798802
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -159,7 +136,7 @@ MonoBehaviour:
     value: 0
   postExposure:
     overrideState: 1
-    value: -0.7
+    value: -1
   contrast:
     overrideState: 1
     value: 50

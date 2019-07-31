@@ -43,10 +43,11 @@ public class Pawn : Unit {
 	}
 
 	// Update is called once per frame
-	public override void Update () {
+	public override void Update ()
+	{
 		base.Update();
 	}
-	
+
 	public void Attack(Pawn other)
 	{
 		if (isOpponent(other) && CanBeat(other))

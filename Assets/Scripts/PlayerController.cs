@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour {
 	private Board board;
 
 	private Pawn pawnPressed;
+	private Outline prevOutline;
 
 	// Use this for initialization
 	void Start () {
@@ -57,17 +58,18 @@ public class PlayerController : MonoBehaviour {
 	{
 		bool isTurnDone = false;
 
+		GameObject underMousGo = FindGameObjectUnderMouse();
+		Highlight(underMousGo);
+
 		if (Input.GetButtonDown("Fire1"))
 		{
-			GameObject go = FindGameObjectUnderMouse();
-			Pawn pawn = go != null ? go.GetComponent<Pawn>() : null;
+			Pawn pawn = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
 			pawnPressed = pawn != null && IsPlayerPawn(pawn) ? pawn : null;
 		}
 		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
 		{
-			GameObject go = FindGameObjectUnderMouse();
-			Pawn pawnRelease = go != null ? go.GetComponent<Pawn>() : null;
-			GridCell cellRelease = go != null ? go.GetComponent<GridCell>() : null;
+			Pawn pawnRelease = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
+			GridCell cellRelease = underMousGo != null ? underMousGo.GetComponent<GridCell>() : null;
 			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease) && pawnPressed.CanBeat(pawnRelease))
 			{
 				pawnPressed.Attack(pawnRelease);
@@ -83,6 +85,21 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		return isTurnDone;
+	}
+
+	private void Highlight(GameObject underMousGo)
+	{
+		if (prevOutline != null)
+		{
+			prevOutline.enabled = false;
+		}
+
+		Outline outline = underMousGo != null ? underMousGo.GetComponent<Outline>() : null;
+		if (outline != null)
+		{
+			outline.enabled = true;
+			prevOutline = outline;
+		}
 	}
 
 	private bool CanReach(Unit a, Unit b)
