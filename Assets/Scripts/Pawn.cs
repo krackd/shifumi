@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Pawn : Unit {
 
@@ -17,6 +18,8 @@ public class Pawn : Unit {
 	private SpritePlane spritePlane;
 	private PawnModel pawnModel;
 
+	private ResourcesManager resourcesManager;
+
 	// Use this for initialization
 	public override void Start ()
 	{
@@ -28,6 +31,8 @@ public class Pawn : Unit {
 		Material pawnmat = getPawnMaterial();
 		pawnmat.color = player.PlayerColor;
 		renderer.sharedMaterial = pawnmat;
+
+		resourcesManager = GameObject.Find("ResourcesManager").GetComponent<ResourcesManager>();
 	}
 
 	private Material getPawnMaterial()
@@ -53,8 +58,32 @@ public class Pawn : Unit {
 		if (isOpponent(other) && CanBeat(other))
 		{
 			// Destorying the opponent and take his place
+			type = other.type;
+			UpdateMaterial();
 			Target = other.transform.position;
 			Destroy(other.gameObject);
+		}
+	}
+
+	internal void UpdateMaterial()
+	{
+		switch (type)
+		{
+			case Pawn.Type.BOMB:
+				SetMaterial(resourcesManager.BombMat);
+				break;
+			case Pawn.Type.LEAF:
+				SetMaterial(resourcesManager.LeafMat);
+				break;
+			case Pawn.Type.WELL:
+				SetMaterial(resourcesManager.WellMat);
+				break;
+			case Pawn.Type.ROCK:
+				SetMaterial(resourcesManager.RockMat);
+				break;
+			case Pawn.Type.CISOR:
+				SetMaterial(resourcesManager.CisorMat);
+				break;
 		}
 	}
 

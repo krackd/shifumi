@@ -8,8 +8,6 @@ public class Board : MonoBehaviour {
 	private Dictionary<Vector3, GridCell> board = new Dictionary<Vector3, GridCell>();
 	private Dictionary<Vector3, Pawn> pawns = new Dictionary<Vector3, Pawn>();
 
-	private ResourcesManager resourcesManager;
-
 	public GridCell GetCell(Vector3 position)
 	{
 		Vector3 snapped = Unit.SnapPosition(position, BoardLayerY);
@@ -29,8 +27,6 @@ public class Board : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		resourcesManager = GameObject.Find("ResourcesManager").GetComponent<ResourcesManager>();
-
 		initializeDict(board, BoardLayerY);
 		initializeDict(pawns, PawnsLayerY);
 		updatePawnsMaterial();
@@ -43,25 +39,7 @@ public class Board : MonoBehaviour {
 	{
 		foreach (Pawn pawn in pawns.Values)
 		{
-			Pawn.Type type = pawn.type;
-			switch (type)
-			{
-				case Pawn.Type.BOMB:
-					pawn.SetMaterial(resourcesManager.BombMat);
-					break;
-				case Pawn.Type.LEAF:
-					pawn.SetMaterial(resourcesManager.LeafMat);
-					break;
-				case Pawn.Type.WELL:
-					pawn.SetMaterial(resourcesManager.WellMat);
-					break;
-				case Pawn.Type.ROCK:
-					pawn.SetMaterial(resourcesManager.RockMat);
-					break;
-				case Pawn.Type.CISOR:
-					pawn.SetMaterial(resourcesManager.CisorMat);
-					break;
-			}
+			pawn.UpdateMaterial();
 		}
 	}
 
