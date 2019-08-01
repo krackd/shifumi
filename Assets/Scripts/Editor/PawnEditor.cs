@@ -1,16 +1,22 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 
 [CustomEditor(typeof(Pawn))]
 [CanEditMultipleObjects]
 public class PawnEditor : Editor
 {
-	private Pawn pawn;
-	private SerializedObject soPawn;
+	private Pawn[] pawns;
+	private SerializedObject[] soPawns;
 
 	private void OnEnable()
 	{
-		pawn = (Pawn)target;
-		soPawn = new SerializedObject(target);
+		int i = 0;
+		pawns = new Pawn[targets.Length];
+		Array.ForEach(targets, target => pawns[i++] = (Pawn)target);
+
+		soPawns = new SerializedObject[targets.Length];
+		i = 0;
+		Array.ForEach(targets, target => soPawns[i++] = new SerializedObject(target));
 	}
 
 	public override void OnInspectorGUI()
@@ -20,9 +26,12 @@ public class PawnEditor : Editor
 
 		if (EditorGUI.EndChangeCheck())
 		{
-			soPawn.ApplyModifiedProperties();
-			pawn.UpdatePawnColor();
-			pawn.UpdateMaterial();
+			Array.ForEach(soPawns, so => so.ApplyModifiedProperties());
+			Array.ForEach(pawns, pawn =>
+			{
+				pawn.UpdatePawnColor();
+				pawn.UpdateMaterial();
+			});
 		}
 	}
 }

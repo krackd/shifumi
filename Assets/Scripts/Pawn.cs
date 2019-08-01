@@ -125,12 +125,20 @@ public class Pawn : Unit {
 
 		Renderer renderer = pawnModel.GetComponent<Renderer>();
 		Material pawnmat = getPawnMaterial();
-		pawnmat.color = player.PlayerColor;
-		renderer.sharedMaterial = pawnmat;
+		if (pawnmat != null)
+		{
+			pawnmat.color = player.PlayerColor;
+			renderer.sharedMaterial = pawnmat;
+		}
 	}
 
 	private Material getPawnMaterial()
 	{
+		if (player == null)
+		{
+			return null;
+		}
+
 		Material pawnMaterial = player.PawnMaterial;
 		if (pawnMaterial == null)
 		{

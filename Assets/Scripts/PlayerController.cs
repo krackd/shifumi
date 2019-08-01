@@ -1,4 +1,6 @@
-﻿using TMPro;
+﻿using System;
+using System.Linq;
+using TMPro;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour {
@@ -136,10 +138,12 @@ public class PlayerController : MonoBehaviour {
 	private GameObject FindGameObjectUnderMouse()
 	{
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		RaycastHit hit;
-		if (Physics.Raycast(ray, out hit, SelectableLayer.value))
+		RaycastHit[] hits = Physics.RaycastAll(ray, SelectableLayer.value);
+		if (hits.Length > 0)
 		{
-			return hit.collider.gameObject;
+			hits = hits.Where(hit => SelectableLayer == (SelectableLayer | (1 << hit.collider.gameObject.layer))).ToArray();
+			Array.Sort(hits, (a, b) => (int)(a.distance * 1000 - b.distance * 1000));
+			return hits[0].collider.gameObject;
 		}
 
 		return null;
