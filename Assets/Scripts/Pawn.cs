@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Pawn : Unit {
 
-	public enum Type
+	public enum PawnType
 	{
 		CISOR,
 		LEAF,
@@ -11,7 +11,17 @@ public class Pawn : Unit {
 		WELL,
 		ROCK
 	}
-	public Type type;
+
+	public PawnType Type
+	{
+		get { return type; }
+		set
+		{
+			type = value;
+			UpdateMaterial();
+		}
+	}
+	[SerializeField] private PawnType type;
 
 	public Player player;
 
@@ -69,19 +79,19 @@ public class Pawn : Unit {
 	{
 		switch (type)
 		{
-			case Pawn.Type.BOMB:
+			case Pawn.PawnType.BOMB:
 				SetMaterial(resourcesManager.BombMat);
 				break;
-			case Pawn.Type.LEAF:
+			case Pawn.PawnType.LEAF:
 				SetMaterial(resourcesManager.LeafMat);
 				break;
-			case Pawn.Type.WELL:
+			case Pawn.PawnType.WELL:
 				SetMaterial(resourcesManager.WellMat);
 				break;
-			case Pawn.Type.ROCK:
+			case Pawn.PawnType.ROCK:
 				SetMaterial(resourcesManager.RockMat);
 				break;
-			case Pawn.Type.CISOR:
+			case Pawn.PawnType.CISOR:
 				SetMaterial(resourcesManager.CisorMat);
 				break;
 		}
@@ -107,16 +117,16 @@ public class Pawn : Unit {
 	{
 		switch (type)
 		{
-			case Type.BOMB:
-				return other.type == Type.WELL || other.type == Type.LEAF;
-			case Type.CISOR:
-				return other.type == Type.BOMB || other.type == Type.LEAF;
-			case Type.ROCK:
-				return other.type == Type.CISOR || other.type == Type.BOMB;
-			case Type.WELL:
-				return other.type == Type.ROCK || other.type == Type.CISOR;
-			case Type.LEAF:
-				return other.type == Type.WELL || other.type == Type.ROCK;
+			case PawnType.BOMB:
+				return other.type == PawnType.WELL || other.type == PawnType.LEAF;
+			case PawnType.CISOR:
+				return other.type == PawnType.BOMB || other.type == PawnType.LEAF;
+			case PawnType.ROCK:
+				return other.type == PawnType.CISOR || other.type == PawnType.BOMB;
+			case PawnType.WELL:
+				return other.type == PawnType.ROCK || other.type == PawnType.CISOR;
+			case PawnType.LEAF:
+				return other.type == PawnType.WELL || other.type == PawnType.ROCK;
 		}
 		return false;
 	}
