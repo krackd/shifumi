@@ -115,6 +115,7 @@ public class Unit : MonoBehaviour
 
 	public static bool IsDistanceOne(Unit a, Unit b)
 	{
-		return SqrMagnitude(a, b, a.transform.position.y) == 1;
+		float sqrMag = SqrMagnitude(a, b, a.transform.position.y);
+		return sqrMag >= 1 && sqrMag < 2;
 	}
 }
