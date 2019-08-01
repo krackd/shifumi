@@ -34,27 +34,11 @@ public class Pawn : Unit {
 	public override void Start ()
 	{
 		base.Start();
-		spritePlane = GetComponentInChildren<SpritePlane>();
-		pawnModel = GetComponentInChildren<PawnModel>();
 
-		Renderer renderer = pawnModel.GetComponent<Renderer>();
-		Material pawnmat = getPawnMaterial();
-		pawnmat.color = player.PlayerColor;
-		renderer.sharedMaterial = pawnmat;
+		findChildrenGameObjects();
+		findResourcesManager();
 
-		resourcesManager = GameObject.Find("ResourcesManager").GetComponent<ResourcesManager>();
-	}
-
-	private Material getPawnMaterial()
-	{
-		Material pawnMaterial = player.PawnMaterial;
-		if (pawnMaterial == null)
-		{
-			Renderer renderer = pawnModel.GetComponent<Renderer>();
-			pawnMaterial = Instantiate(renderer.sharedMaterial);
-			player.PawnMaterial = pawnMaterial;
-		}
-		return pawnMaterial;
+		UpdatePawnColor();
 	}
 
 	// Update is called once per frame
@@ -75,8 +59,12 @@ public class Pawn : Unit {
 		}
 	}
 
-	internal void UpdateMaterial()
+	public void UpdateMaterial()
 	{
+		// This method shall be used from inspector,
+		// so we have to ensure that attributes before using them
+		ensureAttributes();
+
 		switch (type)
 		{
 			case Pawn.PawnType.BOMB:
@@ -129,5 +117,61 @@ public class Pawn : Unit {
 				return other.type == PawnType.WELL || other.type == PawnType.ROCK;
 		}
 		return false;
+	}
+
+	public void UpdatePawnColor()
+	{
+		ensureAttributes();
+
+		Renderer renderer = pawnModel.GetComponent<Renderer>();
+		Material pawnmat = getPawnMaterial();
+		pawnmat.color = player.PlayerColor;
+		renderer.sharedMaterial = pawnmat;
+	}
+
+	private Material getPawnMaterial()
+	{
+		Material pawnMaterial = player.PawnMaterial;
+		if (pawnMaterial == null)
+		{
+			Renderer renderer = pawnModel.GetComponent<Renderer>();
+			pawnMaterial = Instantiate(renderer.sharedMaterial);
+			player.PawnMaterial = pawnMaterial;
+		}
+		return pawnMaterial;
+	}
+
+	private void ensureAttributes()
+	{
+		if (isMissingResourcesManager())
+		{
+			findResourcesManager();
+		}
+
+		if (areMissingChildrenGameObjects())
+		{
+			findChildrenGameObjects();
+		}
+	}
+
+	private bool isMissingResourcesManager()
+	{
+		return resourcesManager == null;
+	}
+
+	private void findResourcesManager()
+	{
+		resourcesManager = GameObject.Find("ResourcesManager").GetComponent<ResourcesManager>();
+	}
+
+	private bool areMissingChildrenGameObjects()
+	{
+		return spritePlane == null || pawnModel == null;
+	}
+
+	private void findChildrenGameObjects()
+	{
+		spritePlane = GetComponentInChildren<SpritePlane>();
+		pawnModel = GetComponentInChildren<PawnModel>();
 	}
 }
