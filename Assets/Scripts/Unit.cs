@@ -27,12 +27,15 @@ public class Unit : MonoBehaviour
 		}
 	}
 
+	protected GameManager GameManager { get; private set; }
+
 	private Vector3 targetPosition;
 	private bool shouldMoveToTarget = false;
 
 	public virtual void Start()
 	{
 		targetPosition = transform.position;
+		GameManager = GameService.FindGameManager();
 	}
 
 	public virtual void Update()

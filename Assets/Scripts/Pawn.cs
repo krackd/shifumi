@@ -47,7 +47,12 @@ public class Pawn : Unit {
 		base.Update();
 	}
 
-	public void Attack(Pawn other)
+	/// <summary>
+	/// Attack the other pawn.
+	/// </summary>
+	/// <param name="other">The other pawn</param>
+	/// <returns>True if the attack leads to a success, false otherwise.</returns>
+	public bool Attack(Pawn other)
 	{
 		if (isOpponent(other) && CanBeat(other))
 		{
@@ -56,7 +61,9 @@ public class Pawn : Unit {
 			UpdateMaterial();
 			Target = other.transform.position;
 			Destroy(other.gameObject);
+			return true;
 		}
+		return false;
 	}
 
 	public void UpdateMaterial()
@@ -87,6 +94,11 @@ public class Pawn : Unit {
 
 	public void Move(GridCell cell)
 	{
+		if (cell == null)
+		{
+			return;
+		}
+
 		Target = SnapPosition(cell.transform.position, transform.position.y);
 	}
 

@@ -20,14 +20,14 @@ public class PlayerController : MonoBehaviour {
 	private bool IsSoloGame { get { return Players.Length == 1; } }
 	private bool IsMultiplayerGame { get { return Players.Length > 1; } }
 
-	private Board board;
+	private GameManager gm;
 
 	private Pawn pawnPressed;
 	private Outline prevOutline;
 
 	// Use this for initialization
 	void Start () {
-		board = GameObject.Find("Board").GetComponent<Board>();
+		gm = GameService.FindGameManager();
 		UpdatePlayerTurnColor();
 	}
 
@@ -77,7 +77,7 @@ public class PlayerController : MonoBehaviour {
 				pawnPressed.Attack(pawnRelease);
 				isTurnDone = true;
 			}
-			else if (cellRelease != null && board.IsFree(cellRelease) && CanReach(pawnPressed, cellRelease))
+			else if (cellRelease != null && gm.Board.IsFree(cellRelease) && CanReach(pawnPressed, cellRelease))
 			{
 				pawnPressed.Move(cellRelease);
 				isTurnDone = true;
@@ -113,8 +113,8 @@ public class PlayerController : MonoBehaviour {
 
 	private bool IsPathFree(Unit a, Unit b)
 	{
-		Vector3 aPos = Unit.SnapPosition(a.transform.position, board.BoardLayerY);
-		Vector3 bPos = Unit.SnapPosition(b.transform.position, board.BoardLayerY);
+		Vector3 aPos = Unit.SnapPosition(a.transform.position, gm.Board.BoardLayerY);
+		Vector3 bPos = Unit.SnapPosition(b.transform.position, gm.Board.BoardLayerY);
 		Vector3 start = aPos;
 		Vector3 diff = bPos - aPos;
 		float diffSqrMag = diff.sqrMagnitude;
@@ -125,8 +125,8 @@ public class PlayerController : MonoBehaviour {
 		Vector3 offset = direction;
 		while (offset.sqrMagnitude < diffSqrMag)
 		{
-			GridCell cell = board.GetCell(start + offset);
-			if (cell == null || !board.IsFree(cell))
+			GridCell cell = gm.Board.GetCell(start + offset);
+			if (cell == null || !gm.Board.IsFree(cell))
 			{
 				return false;
 			}

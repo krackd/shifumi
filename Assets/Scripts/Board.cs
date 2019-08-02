@@ -16,12 +16,22 @@ public class Board : MonoBehaviour {
 		return cellFound ? cell : null;
 	}
 
-	public bool IsFree(GridCell cell)
+	public Pawn GetPawn(GridCell cell)
 	{
 		Pawn pawn;
 		Vector3 pos = Unit.SnapPosition(cell.transform.position, PawnsLayerY);
 		bool hasPawn = pawns.TryGetValue(pos, out pawn);
-		return !hasPawn;
+		return hasPawn ? pawn : null;
+	}
+
+	public bool IsFree(GridCell cell)
+	{
+		return GetPawn(cell) == null;
+	}
+
+	public bool IsNotFree(GridCell cell)
+	{
+		return !IsFree(cell);
 	}
 
 	// Use this for initialization
