@@ -2187,8 +2187,7 @@ MonoBehaviour:
   OnPawnDestroyedEvent:
     m_PersistentCalls:
       m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
+    m_TypeName: PawnEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
 --- !u!1001 &1051968495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4412,5 +4411,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 1508647212}
+    - target: {fileID: 5233150458892714266, guid: 132bebcc1bf76ee4a9991426145c8a56,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b7bb99a76e58ea546b04fafde9ba2722, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 132bebcc1bf76ee4a9991426145c8a56, type: 3}
