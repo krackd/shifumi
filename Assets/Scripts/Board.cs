@@ -1,9 +1,18 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+
+[System.Serializable]
+public class PawnEvent : UnityEvent<Pawn> { }
 
 public class Board : MonoBehaviour {
 	public float BoardLayerY = 0f;
 	public float PawnsLayerY = 0.5f;
+
+	public PawnEvent OnPawnDestroyedEvent;
+
+	public ICollection<GridCell> Cells { get { return board.Values; } }
+	public ICollection<Pawn> Pawns {  get { return pawns.Values; } }
 
 	private Dictionary<Vector3, GridCell> board = new Dictionary<Vector3, GridCell>();
 	private Dictionary<Vector3, Pawn> pawns = new Dictionary<Vector3, Pawn>();
@@ -87,7 +96,10 @@ public class Board : MonoBehaviour {
 
 	private void updateDestroyed(Unit entity)
 	{
-		
+		if (entity is Pawn)
+		{
+			OnPawnDestroyedEvent.Invoke(entity as Pawn);
+		}
 	}
 
 	private static bool TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit

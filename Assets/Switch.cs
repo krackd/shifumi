@@ -10,6 +10,13 @@ public class Switch : MonoBehaviour
 
 	public UnityEvent OnSwitchTriggeredEvent;
 
+	private GameManager gm;
+
+	private void Start()
+	{
+		gm = GameService.FindGameManager();
+	}
+
 	private void OnTriggerEnter(Collider other)
 	{
 		if (player == null)
@@ -20,7 +27,7 @@ public class Switch : MonoBehaviour
 		Pawn pawn = other.gameObject.GetComponent<Pawn>();
 		if (pawn != null && type == pawn.Type && player == pawn.player)
 		{
-			Debug.Log("Triggered");
+			gm.Win();
 		}
 	}
 }

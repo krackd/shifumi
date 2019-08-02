@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		gm = GameService.FindGameManager();
 		UpdatePlayerTurnColor();
+		gm.Board.OnPawnDestroyedEvent.AddListener(OnPawnDestroyed);
 	}
 
 	// Update is called once per frame
@@ -38,6 +39,21 @@ public class PlayerController : MonoBehaviour {
 		if (isTurnDone)
 		{
 			UpdatePlayerIndex();
+		}
+	}
+
+	private void OnPawnDestroyed(Pawn pawn)
+	{
+		if (IsSoloGame && pawn.player == Players[0])
+		{
+			int nbPawns = gm.Board.Pawns
+				.Where(p => p.player == Players[0])
+				.Count();
+
+			if (nbPawns <= 0)
+			{
+				gm.Loose();
+			}
 		}
 	}
 

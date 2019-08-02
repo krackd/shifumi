@@ -2184,6 +2184,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoardLayerY: 0
   PawnsLayerY: 0.5
+  OnPawnDestroyedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!1001 &1051968495
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4404,13 +4409,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5233150458127801344, guid: 132bebcc1bf76ee4a9991426145c8a56,
         type: 3}
-      propertyPath: layers.m_Bits
-      value: 512
-      objectReference: {fileID: 0}
-    - target: {fileID: 5233150458127801344, guid: 132bebcc1bf76ee4a9991426145c8a56,
-        type: 3}
-      propertyPath: type
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1508647212}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 132bebcc1bf76ee4a9991426145c8a56, type: 3}
