@@ -59,7 +59,8 @@ public class Pawn : Unit {
 			// Destorying the opponent and take his place
 			type = other.type;
 			UpdateMaterial();
-			Target = other.transform.position;
+			Vector3 otherPos = other.transform.position;
+			Target = SnapPosition(otherPos, otherPos.y);
 			Destroy(other.gameObject);
 			return true;
 		}
