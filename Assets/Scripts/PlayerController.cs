@@ -96,9 +96,15 @@ public class PlayerController : MonoBehaviour {
 
 	private void UpdatePlayerIndex()
 	{
+		int previousIndex = playerIndex;
 		playerIndex++;
 		playerIndex %= Players.Length;
 		UpdatePlayerTurnColor();
+
+		if (playerIndex != previousIndex)
+		{
+			SelectedPawn = null; // TODO store selected pawns for each player
+		}
 	}
 
 	private void UpdatePlayerTurnColor()
