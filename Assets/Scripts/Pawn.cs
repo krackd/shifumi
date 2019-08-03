@@ -47,22 +47,38 @@ public class Pawn : Unit {
 		base.Update();
 	}
 
+	public bool Attack(Pawn other)
+	{
+		return Attack(other, true);
+	}
+
 	/// <summary>
 	/// Attack the other pawn.
 	/// </summary>
 	/// <param name="other">The other pawn</param>
+	/// <param name="moveToOpponent">True if should move to opponent  position after attack, false otherwise</param>
 	/// <returns>True if the attack leads to a success, false otherwise.</returns>
-	public bool Attack(Pawn other)
+	public bool Attack(Pawn other, bool moveToOpponent)
 	{
-		if (isOpponent(other) && CanBeat(other))
+		if (!isOpponent(other))
+		{
+			return false;
+		}
+
+		if (CanBeat(other))
 		{
 			// Destorying the opponent and take his place
 			type = other.type;
 			UpdateMaterial();
 			Vector3 otherPos = other.transform.position;
-			Target = SnapPosition(otherPos, otherPos.y);
+			if (moveToOpponent) { Target = SnapPosition(otherPos, otherPos.y); }
 			Destroy(other.gameObject);
 			return true;
+		}
+		// loose against opponent = get eat
+		else if (other.CanBeat(this))
+		{
+			other.Attack(this, false);
 		}
 		return false;
 	}
