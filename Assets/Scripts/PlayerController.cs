@@ -267,8 +267,11 @@ public class PlayerController : MonoBehaviour {
 		if (hits.Length > 0)
 		{
 			hits = hits.Where(hit => SelectableLayer == (SelectableLayer | (1 << hit.collider.gameObject.layer))).ToArray();
-			Array.Sort(hits, (a, b) => (int)(a.distance * 1000 - b.distance * 1000));
-			return hits[0].collider.gameObject;
+			if (hits.Length > 0)
+			{
+				Array.Sort(hits, (a, b) => (int)(a.distance * 1000 - b.distance * 1000));
+				return hits[0].collider.gameObject;
+			}
 		}
 
 		return null;
