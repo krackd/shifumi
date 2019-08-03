@@ -47,6 +47,11 @@ public class Pawn : Unit {
 		base.Update();
 	}
 
+	/// <summary>
+	/// Attack the other pawn and moves the opponent.
+	/// </summary>
+	/// <param name="other">The other pawn</param>
+	/// <returns>True if the attack leads to a success, false otherwise.</returns>
 	public bool Attack(Pawn other)
 	{
 		return Attack(other, true);
@@ -58,7 +63,7 @@ public class Pawn : Unit {
 	/// <param name="other">The other pawn</param>
 	/// <param name="moveToOpponent">True if should move to opponent  position after attack, false otherwise</param>
 	/// <returns>True if the attack leads to a success, false otherwise.</returns>
-	public bool Attack(Pawn other, bool moveToOpponent)
+	private bool Attack(Pawn other, bool moveToOpponent)
 	{
 		if (!isOpponent(other))
 		{
@@ -71,8 +76,9 @@ public class Pawn : Unit {
 			type = other.type;
 			UpdateMaterial();
 			Vector3 otherPos = other.transform.position;
-			if (moveToOpponent) { Target = SnapPosition(otherPos, otherPos.y); }
+			Vector3 snappedPosition = SnapPosition(otherPos, otherPos.y);
 			Destroy(other.gameObject);
+			if (moveToOpponent) { Target = snappedPosition; }
 			return true;
 		}
 		// loose against opponent = get eat

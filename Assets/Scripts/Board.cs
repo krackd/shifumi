@@ -8,20 +8,22 @@ public class PawnEvent : UnityEvent<Pawn> { }
 public class Board : MonoBehaviour {
 	public float BoardLayerY = 0f;
 	public float PawnsLayerY = 0.5f;
+	public float DoorsLayerY = 0.75f;
 
 	public PawnEvent OnPawnDestroyedEvent;
 
-	public ICollection<GridCell> Cells { get { return board.Values; } }
+	public ICollection<GridCell> Cells { get { return cells.Values; } }
 	public ICollection<Pawn> Pawns {  get { return pawns.Values; } }
 
-	private Dictionary<Vector3, GridCell> board = new Dictionary<Vector3, GridCell>();
+	private Dictionary<Vector3, GridCell> cells = new Dictionary<Vector3, GridCell>();
 	private Dictionary<Vector3, Pawn> pawns = new Dictionary<Vector3, Pawn>();
+	private Dictionary<Vector3, Door> doors = new Dictionary<Vector3, Door>();
 
 	public GridCell GetCell(Vector3 position)
 	{
 		Vector3 snapped = Unit.SnapPosition(position, BoardLayerY);
 		GridCell cell;
-		bool cellFound = board.TryGetValue(snapped, out cell);
+		bool cellFound = cells.TryGetValue(snapped, out cell);
 		return cellFound ? cell : null;
 	}
 
@@ -33,9 +35,17 @@ public class Board : MonoBehaviour {
 		return hasPawn ? pawn : null;
 	}
 
+	public Door GetDoor(GridCell cell)
+	{
+		Door door;
+		Vector3 pos = Unit.SnapPosition(cell.transform.position, DoorsLayerY);
+		bool hasDoor = doors.TryGetValue(pos, out door);
+		return hasDoor ? door : null;
+	}
+
 	public bool IsFree(GridCell cell)
 	{
-		return GetPawn(cell) == null;
+		return GetPawn(cell) == null && GetDoor(cell) == null;
 	}
 
 	public bool IsNotFree(GridCell cell)
@@ -46,12 +56,14 @@ public class Board : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
 	{
-		initializeDict(board, BoardLayerY);
+		initializeDict(cells, BoardLayerY);
 		initializeDict(pawns, PawnsLayerY);
+		initializeDict(doors, DoorsLayerY);
 		updatePawnsMaterial();
 
-		Debug.Log(board.Count + " grid cells found");
+		Debug.Log(cells.Count + " cells found");
 		Debug.Log(pawns.Count + " pawns found");
+		Debug.Log(doors.Count + " doors found");
 	}
 
 	private void updatePawnsMaterial()
@@ -85,9 +97,20 @@ public class Board : MonoBehaviour {
 	private void updatePosition(Unit entity)
 	{
 		bool updated = false;
-		updated |= TryUpdatePosition(entity, board);
-		updated |= TryUpdatePosition(entity, pawns);
 
+		if (entity is Pawn)
+		{
+			updated |= TryUpdatePosition(entity, pawns);
+		}
+		if (entity is Door)
+		{
+			updated |= TryUpdatePosition(entity, doors);
+		}
+		if (entity is GridCell)
+		{
+			updated |= TryUpdatePosition(entity, cells);
+		}
+		
 		if (!updated)
 		{
 			Debug.LogError("Failed to update unit at position: " + entity.transform.position);
@@ -96,16 +119,29 @@ public class Board : MonoBehaviour {
 
 	private void updateDestroyed(Unit entity)
 	{
+		Vector3 snappedPosition = Unit.SnapPosition(entity.Target);
 		if (entity is Pawn)
 		{
 			OnPawnDestroyedEvent.Invoke(entity as Pawn);
+			pawns.Remove(snappedPosition);
+		}
+		else if (entity is Door)
+		{
+			Debug.Log("Remove door: " + snappedPosition);
+			Debug.Log("doors nb: " + doors.Count);
+			doors.Remove(snappedPosition);
+			Debug.Log("doors nb: " + doors.Count);
+		}
+		else if (entity is GridCell)
+		{
+			cells.Remove(snappedPosition);
 		}
 	}
 
 	private static bool TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
 	{
 		T unit;
-		Vector3 pos = Unit.SnapPosition(entity.transform.position);
+		Vector3 pos = Unit.SnapPosition(entity.PreviousTarget);
 		if (dict.TryGetValue(pos, out unit))
 		{
 			dict.Remove(pos);
@@ -114,16 +150,5 @@ public class Board : MonoBehaviour {
 		}
 		return false;
 	}
-
-	private static bool TryRemove<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
-	{
-		T unit;
-		Vector3 pos = Unit.SnapPosition(entity.transform.position);
-		if (dict.TryGetValue(pos, out unit))
-		{
-			dict.Remove(pos);
-			return true;
-		}
-		return false;
-	}
+	
 }

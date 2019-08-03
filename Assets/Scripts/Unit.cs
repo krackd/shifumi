@@ -25,11 +25,14 @@ public class Unit : MonoBehaviour
 
 		set
 		{
+			PreviousTarget = targetPosition;
 			targetPosition = value;
 			shouldMoveToTarget = true;
 			OnTargetChangedEvent.Invoke(this);
 		}
 	}
+
+	public Vector3 PreviousTarget { get; private set; }
 
 	protected GameManager GameManager { get; private set; }
 

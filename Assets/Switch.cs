@@ -1,20 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
 
-public class Switch : MonoBehaviour
+public abstract class Switch : MonoBehaviour
 {
 	public Pawn.PawnType type;
 	public Player player;
 
 	public UnityEvent OnSwitchTriggeredEvent;
 
-	private GameManager gm;
+	protected GameManager GameManager { get; private set; }
 
 	private void Start()
 	{
-		gm = GameService.FindGameManager();
+		GameManager = GameService.FindGameManager();
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -27,7 +25,9 @@ public class Switch : MonoBehaviour
 		Pawn pawn = other.gameObject.GetComponent<Pawn>();
 		if (pawn != null && type == pawn.Type && player == pawn.player)
 		{
-			gm.Win();
+			PerformAction();
 		}
 	}
+
+	protected abstract void PerformAction();
 }
