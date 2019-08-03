@@ -102,6 +102,7 @@ public class Board : MonoBehaviour {
 			if (previousCellFound)
 			{
 				Debug.Log("Destroying " + previousCell.gameObject);
+				dict.RemoveByFirst(snapped);
 				Destroy(previousCell.gameObject);
 			}
 			dict.Add(snapped, unit);
@@ -128,18 +129,25 @@ public class Board : MonoBehaviour {
 
 	private void updateDestroyed(Unit entity)
 	{
-		if (entity is Pawn)
+		try
 		{
-			OnPawnDestroyedEvent.Invoke(entity as Pawn);
-			pawns.RemoveBySecond(entity as Pawn);
+			if (entity is Pawn)
+			{
+				OnPawnDestroyedEvent.Invoke(entity as Pawn);
+				pawns.RemoveBySecond(entity as Pawn);
+			}
+			else if (entity is Door)
+			{
+				doors.RemoveBySecond(entity as Door);
+			}
+			else if (entity is GridCell)
+			{
+				cells.RemoveBySecond(entity as GridCell);
+			}
 		}
-		else if (entity is Door)
+		catch (ArgumentException)
 		{
-			doors.RemoveBySecond(entity as Door);
-		}
-		else if (entity is GridCell)
-		{
-			cells.RemoveBySecond(entity as GridCell);
+			// Do noting
 		}
 	}
 
