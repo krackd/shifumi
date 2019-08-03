@@ -29,6 +29,11 @@ public class Board : MonoBehaviour {
 
 	public Pawn GetPawn(GridCell cell)
 	{
+		if (cell == null)
+		{
+			return null;
+		}
+
 		Pawn pawn;
 		Vector3 pos = Unit.SnapPosition(cell.transform.position, PawnsLayerY);
 		bool hasPawn = pawns.TryGetValue(pos, out pawn);
@@ -37,6 +42,11 @@ public class Board : MonoBehaviour {
 
 	public Door GetDoor(GridCell cell)
 	{
+		if (cell == null)
+		{
+			return null;
+		}
+
 		Door door;
 		Vector3 pos = Unit.SnapPosition(cell.transform.position, DoorsLayerY);
 		bool hasDoor = doors.TryGetValue(pos, out door);
@@ -45,6 +55,11 @@ public class Board : MonoBehaviour {
 
 	public bool IsFree(GridCell cell)
 	{
+		if (cell == null)
+		{
+			return false;
+		}
+
 		return GetPawn(cell) == null && GetDoor(cell) == null;
 	}
 
@@ -96,6 +111,8 @@ public class Board : MonoBehaviour {
 
 	private void updatePosition(Unit entity)
 	{
+		// FIXME use another dict to store last object position?
+		// kind of BiDiMap?
 		bool updated = false;
 
 		if (entity is Pawn)

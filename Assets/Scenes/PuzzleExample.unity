@@ -2196,6 +2196,11 @@ PrefabInstance:
       propertyPath: selectedPawn
       value: 
       objectReference: {fileID: 1943068947}
+    - target: {fileID: 114600047667548820, guid: 5a706f414728a584fbd73592b6e4021b,
+        type: 3}
+      propertyPath: ArrowsMoveDelayInSecs
+      value: 0.3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a706f414728a584fbd73592b6e4021b, type: 3}
 --- !u!1 &1051130379
@@ -2246,6 +2251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BoardLayerY: 0
   PawnsLayerY: 0.5
+  DoorsLayerY: 0.75
   OnPawnDestroyedEvent:
     m_PersistentCalls:
       m_Calls: []

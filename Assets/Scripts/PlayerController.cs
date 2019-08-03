@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour {
 	public LayerMask SelectableLayer;
 	public float PathFindingStepFactor = 0.75f;
 
+	[Header("Movement")]
+	public float ArrowsMoveDelayInSecs = 0.35f;
+
 	[Header("Player Turn Text")]
 	public TextMeshPro PlayerTurnText;
 
@@ -20,6 +23,8 @@ public class PlayerController : MonoBehaviour {
 	private Player Player { get { return Players[playerIndex]; } }
 	private bool IsSoloGame { get { return Players.Length == 1; } }
 	private bool IsMultiplayerGame { get { return Players.Length > 1; } }
+
+	private float moveTimer = 0;
 
 	private GameManager gm;
 
@@ -35,10 +40,13 @@ public class PlayerController : MonoBehaviour {
 	private Outline prevOutline;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		gm = GameService.FindGameManager();
 		UpdatePlayerTurnColor();
 		GameService.FindBoard().OnPawnDestroyedEvent.AddListener(OnPawnDestroyed);
+
+		ResetMoveTimer();
 	}
 
 	// Update is called once per frame
@@ -51,6 +59,7 @@ public class PlayerController : MonoBehaviour {
 	private void UpdateTurn()
 	{
 		bool isTurnDone = UpdateMouseInput();
+		isTurnDone |= UpdateArrowsInput();
 		if (isTurnDone)
 		{
 			UpdatePlayerIndex();
@@ -105,6 +114,52 @@ public class PlayerController : MonoBehaviour {
 		GameObject underMousGo = FindGameObjectUnderMouse();
 		Highlight(underMousGo);
 		return UpdateSelection(underMousGo);
+	}
+
+	private bool UpdateArrowsInput()
+	{
+		if (moveTimer > 0)
+		{
+			moveTimer -= Time.deltaTime;
+			return false;
+		}
+
+		bool isTurnDone = false;
+		Vector3 dir = Vector3.zero;
+
+		float h = Input.GetAxis("Horizontal");
+		float v = Input.GetAxis("Vertical");
+		dir += Vector3.right * h;
+		dir += Vector3.forward * v;
+
+		if (dir != Vector3.zero)
+		{
+			GridCell cell = gm.Board.GetCell(selectedPawn.Target + dir.normalized);
+			if (cell != null)
+			{
+				if (gm.Board.IsFree(cell))
+				{
+					selectedPawn.Move(cell);
+					isTurnDone = true;
+				}
+				else
+				{
+					Pawn pawn = gm.Board.GetPawn(cell);
+					if (IsEnemyPawn(pawn))
+					{
+						selectedPawn.Attack(pawn);
+						isTurnDone = true;
+					}
+				}
+			}
+		}
+
+		if (isTurnDone)
+		{
+			ResetMoveTimer();
+		}
+
+		return isTurnDone;
 	}
 
 	private bool UpdateSelection(GameObject underMousGo)
@@ -215,12 +270,12 @@ public class PlayerController : MonoBehaviour {
 
 	private bool IsPlayerPawn(Pawn pawn)
 	{
-		return Player.IsSamePlayer(pawn.player);
+		return pawn != null && Player.IsSamePlayer(pawn.player);
 	}
 
 	private bool IsEnemyPawn(Pawn pawn)
 	{
-		return !Player.IsSamePlayer(pawn.player);
+		return pawn != null && !Player.IsSamePlayer(pawn.player);
 	}
 
 	private void OnPawnDestroyed(Pawn pawn)
@@ -236,5 +291,10 @@ public class PlayerController : MonoBehaviour {
 				gm.Loose();
 			}
 		}
+	}
+
+	private void ResetMoveTimer()
+	{
+		moveTimer = ArrowsMoveDelayInSecs;
 	}
 }

@@ -58,7 +58,7 @@ MeshRenderer:
   m_RenderingLayerMask: 4294967295
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 09d2cb394b6dfd14db11221c1e66125b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9cd5816372d094f82484d126e2161e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SmoothMoveSpeed: 10
+  SmoothMoveSpeed: 20
   TargetReachedThresold: 0.0001
   OnTargetChangedEvent:
     m_PersistentCalls:
