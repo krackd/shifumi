@@ -230,7 +230,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff9cd5816372d094f82484d126e2161e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SmoothMoveSpeed: 20
+  SmoothMoveSpeed: 10
   TargetReachedThresold: 0.0001
   OnTargetChangedEvent:
     m_PersistentCalls:

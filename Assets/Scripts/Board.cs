@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,15 +16,15 @@ public class Board : MonoBehaviour {
 	public ICollection<GridCell> Cells { get { return cells.Values; } }
 	public ICollection<Pawn> Pawns {  get { return pawns.Values; } }
 
-	private Dictionary<Vector3, GridCell> cells = new Dictionary<Vector3, GridCell>();
-	private Dictionary<Vector3, Pawn> pawns = new Dictionary<Vector3, Pawn>();
-	private Dictionary<Vector3, Door> doors = new Dictionary<Vector3, Door>();
+	private BiDiMap<Vector3, GridCell> cells = new BiDiMap<Vector3, GridCell>();
+	private BiDiMap<Vector3, Pawn> pawns = new BiDiMap<Vector3, Pawn>();
+	private BiDiMap<Vector3, Door> doors = new BiDiMap<Vector3, Door>();
 
 	public GridCell GetCell(Vector3 position)
 	{
 		Vector3 snapped = Unit.SnapPosition(position, BoardLayerY);
 		GridCell cell;
-		bool cellFound = cells.TryGetValue(snapped, out cell);
+		bool cellFound = cells.TryGetByFirst(snapped, out cell);
 		return cellFound ? cell : null;
 	}
 
@@ -36,7 +37,7 @@ public class Board : MonoBehaviour {
 
 		Pawn pawn;
 		Vector3 pos = Unit.SnapPosition(cell.transform.position, PawnsLayerY);
-		bool hasPawn = pawns.TryGetValue(pos, out pawn);
+		bool hasPawn = pawns.TryGetByFirst(pos, out pawn);
 		return hasPawn ? pawn : null;
 	}
 
@@ -49,7 +50,7 @@ public class Board : MonoBehaviour {
 
 		Door door;
 		Vector3 pos = Unit.SnapPosition(cell.transform.position, DoorsLayerY);
-		bool hasDoor = doors.TryGetValue(pos, out door);
+		bool hasDoor = doors.TryGetByFirst(pos, out door);
 		return hasDoor ? door : null;
 	}
 
@@ -89,7 +90,7 @@ public class Board : MonoBehaviour {
 		}
 	}
 
-	private void initializeDict<T>(Dictionary<Vector3, T> dict, float layer) where T : Unit
+	private void initializeDict<T>(BiDiMap<Vector3, T> dict, float layer) where T : Unit
 	{
 		T[] units = GetComponentsInChildren<T>();
 		foreach (T unit in units)
@@ -97,13 +98,13 @@ public class Board : MonoBehaviour {
 			unit.Snap(layer);
 			Vector3 snapped = unit.transform.position;
 			T previousCell;
-			bool previousCellFound = dict.TryGetValue(snapped, out previousCell);
+			bool previousCellFound = dict.TryGetByFirst(snapped, out previousCell);
 			if (previousCellFound)
 			{
 				Debug.Log("Destroying " + previousCell.gameObject);
 				Destroy(previousCell.gameObject);
 			}
-			dict[snapped] = unit;
+			dict.Add(snapped, unit);
 			unit.OnTargetChangedEvent.AddListener(updatePosition);
 			unit.OnDestroyEvent.AddListener(updateDestroyed);
 		}
@@ -111,61 +112,49 @@ public class Board : MonoBehaviour {
 
 	private void updatePosition(Unit entity)
 	{
-		// FIXME use another dict to store last object position?
-		// kind of BiDiMap?
-		bool updated = false;
-
 		if (entity is Pawn)
 		{
-			updated |= TryUpdatePosition(entity, pawns);
+			TryUpdatePosition(entity as Pawn, pawns);
 		}
 		if (entity is Door)
 		{
-			updated |= TryUpdatePosition(entity, doors);
+			TryUpdatePosition(entity as Door, doors);
 		}
 		if (entity is GridCell)
 		{
-			updated |= TryUpdatePosition(entity, cells);
-		}
-		
-		if (!updated)
-		{
-			Debug.LogError("Failed to update unit at position: " + entity.transform.position);
+			TryUpdatePosition(entity as GridCell, cells);
 		}
 	}
 
 	private void updateDestroyed(Unit entity)
 	{
-		Vector3 snappedPosition = Unit.SnapPosition(entity.Target);
 		if (entity is Pawn)
 		{
 			OnPawnDestroyedEvent.Invoke(entity as Pawn);
-			pawns.Remove(snappedPosition);
+			pawns.RemoveBySecond(entity as Pawn);
 		}
 		else if (entity is Door)
 		{
-			Debug.Log("Remove door: " + snappedPosition);
-			Debug.Log("doors nb: " + doors.Count);
-			doors.Remove(snappedPosition);
-			Debug.Log("doors nb: " + doors.Count);
+			doors.RemoveBySecond(entity as Door);
 		}
 		else if (entity is GridCell)
 		{
-			cells.Remove(snappedPosition);
+			cells.RemoveBySecond(entity as GridCell);
 		}
 	}
 
-	private static bool TryUpdatePosition<T>(Unit entity, Dictionary<Vector3, T> dict) where T : Unit
+	private static bool TryUpdatePosition<T>(T entity, BiDiMap<Vector3, T> dict) where T : Unit
 	{
-		T unit;
-		Vector3 pos = Unit.SnapPosition(entity.PreviousTarget);
-		if (dict.TryGetValue(pos, out unit))
+		try
 		{
-			dict.Remove(pos);
-			dict[entity.Target] = unit;
-			return true;
+			dict.RemoveBySecond(entity);
 		}
-		return false;
+		catch (ArgumentException)
+		{
+			// Do nothing if already missing
+		}
+
+		return dict.TryAdd(entity.Target, entity);
 	}
 	
 }

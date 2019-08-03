@@ -124,6 +124,12 @@ public class PlayerController : MonoBehaviour {
 			return false;
 		}
 
+		if (selectedPawn == null)
+		{
+			return false;
+		}
+
+		// FIXME Wait for pawn to reach target
 		bool isTurnDone = false;
 		Vector3 dir = Vector3.zero;
 

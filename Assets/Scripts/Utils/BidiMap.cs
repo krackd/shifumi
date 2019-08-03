@@ -11,6 +11,9 @@ public class BiDiMap<TFirst, TSecond>
 	IDictionary<TFirst, TSecond> firstToSecond = new Dictionary<TFirst, TSecond>();
 	IDictionary<TSecond, TFirst> secondToFirst = new Dictionary<TSecond, TFirst>();
 
+	public ICollection<TFirst> Keys { get { return firstToSecond.Keys; } }
+	public ICollection<TSecond> Values { get { return firstToSecond.Values; } }
+
 	#region Exception throwing methods
 
 	/// <summary>
