@@ -4,6 +4,7 @@ using UnityEngine.Events;
 [System.Serializable]
 public class UnitEvent : UnityEvent<Unit> { }
 
+[RequireComponent(typeof(Outline))]
 public class Unit : MonoBehaviour
 {
 	public float SmoothMoveSpeed = 5f;
@@ -11,6 +12,9 @@ public class Unit : MonoBehaviour
 
 	public UnitEvent OnTargetChangedEvent;
 	public UnitEvent OnDestroyEvent;
+
+	public Outline Outline { get; private set; }
+	private Color outlineInitialColor;
 
 	public Vector3 Target
 	{
@@ -36,6 +40,8 @@ public class Unit : MonoBehaviour
 	{
 		targetPosition = transform.position;
 		GameManager = GameService.FindGameManager();
+		Outline = GetComponent<Outline>();
+		outlineInitialColor = Outline.OutlineColor;
 	}
 
 	public virtual void Update()
@@ -93,6 +99,11 @@ public class Unit : MonoBehaviour
 	{
 		Vector3 snappedPosition = SnapPosition(transform.position, layer);
 		JumpToPosition(snappedPosition);
+	}
+
+	public void RestoreOutileColor()
+	{
+		Outline.OutlineColor = outlineInitialColor;
 	}
 
 	public static Vector3 SnapPosition(Vector3 pos)

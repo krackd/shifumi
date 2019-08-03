@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour {
 	public Player[] Players;
 
 	[Header("Selection")]
+	public Color SelectedPawnColor = Color.blue;
 	public LayerMask SelectableLayer;
 	public float PathFindingStepFactor = 0.75f;
 
@@ -22,7 +23,15 @@ public class PlayerController : MonoBehaviour {
 
 	private GameManager gm;
 
-	private Pawn pawnPressed;
+	public Pawn SelectedPawn {
+		get { return selectedPawn; }
+		set
+		{
+			UpdateSelectedPawn(value);
+		}
+	}
+	[SerializeField] private Pawn selectedPawn;
+	private bool updatePawnOutline = true;
 	private Outline prevOutline;
 
 	// Use this for initialization
@@ -35,25 +44,44 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update()
 	{
-		bool isTurnDone = UpdateTurn();
+		UpdateOutline();
+		UpdateTurn();
+	}
+
+	private void UpdateTurn()
+	{
+		bool isTurnDone = UpdateMouseInput();
 		if (isTurnDone)
 		{
 			UpdatePlayerIndex();
 		}
 	}
 
-	private void OnPawnDestroyed(Pawn pawn)
+	private void UpdateOutline()
 	{
-		if (IsSoloGame && pawn.player == Players[0])
+		if (updatePawnOutline)
 		{
-			int nbPawns = gm.Board.Pawns
-				.Where(p => p.player == Players[0])
-				.Count();
+			UpdateSelectedPawnOutline();
+			updatePawnOutline = false;
+		}
+	}
 
-			if (nbPawns <= 0)
-			{
-				gm.Loose();
-			}
+	private void UpdateSelectedPawn(Pawn value)
+	{
+		if (selectedPawn != null) {
+			selectedPawn.Outline.enabled = false;
+			selectedPawn.RestoreOutileColor();
+		}
+		selectedPawn = value;
+		UpdateSelectedPawnOutline();
+	}
+
+	private void UpdateSelectedPawnOutline()
+	{
+		if (selectedPawn != null)
+		{
+			selectedPawn.Outline.enabled = true;
+			selectedPawn.Outline.OutlineColor = SelectedPawnColor;
 		}
 	}
 
@@ -72,34 +100,48 @@ public class PlayerController : MonoBehaviour {
 		}	
 	}
 
-	private bool UpdateTurn()
+	private bool UpdateMouseInput()
 	{
-		bool isTurnDone = false;
-
 		GameObject underMousGo = FindGameObjectUnderMouse();
 		Highlight(underMousGo);
+		return UpdateSelection(underMousGo);
+	}
+
+	private bool UpdateSelection(GameObject underMousGo)
+	{
+		bool isTurnDone = false;
 
 		if (Input.GetButtonDown("Fire1"))
 		{
 			Pawn pawn = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
-			pawnPressed = pawn != null && IsPlayerPawn(pawn) ? pawn : null;
+			if (pawn != null && IsPlayerPawn(pawn))
+			{
+				SelectedPawn = pawn;
+			}
+			else if (SelectedPawn != null)
+			{
+				isTurnDone = MoveOrAttack(underMousGo);
+			}
 		}
-		else if (pawnPressed != null && Input.GetButtonUp("Fire1"))
-		{
-			Pawn pawnRelease = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
-			GridCell cellRelease = underMousGo != null ? underMousGo.GetComponent<GridCell>() : null;
-			if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(pawnPressed, pawnRelease) && pawnPressed.CanBeat(pawnRelease))
-			{
-				pawnPressed.Attack(pawnRelease);
-				isTurnDone = true;
-			}
-			else if (cellRelease != null && gm.Board.IsFree(cellRelease) && CanReach(pawnPressed, cellRelease))
-			{
-				pawnPressed.Move(cellRelease);
-				isTurnDone = true;
-			}
+		
+		return isTurnDone;
+	}
 
-			pawnPressed = null;
+	private bool MoveOrAttack(GameObject underMousGo)
+	{
+		bool isTurnDone = false;
+
+		Pawn pawnRelease = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
+		GridCell cellRelease = underMousGo != null ? underMousGo.GetComponent<GridCell>() : null;
+		if (pawnRelease != null && IsEnemyPawn(pawnRelease) && CanReach(SelectedPawn, pawnRelease) && SelectedPawn.CanBeat(pawnRelease))
+		{
+			SelectedPawn.Attack(pawnRelease);
+			isTurnDone = true;
+		}
+		else if (cellRelease != null && gm.Board.IsFree(cellRelease) && CanReach(SelectedPawn, cellRelease))
+		{
+			SelectedPawn.Move(cellRelease);
+			isTurnDone = true;
 		}
 
 		return isTurnDone;
@@ -107,6 +149,12 @@ public class PlayerController : MonoBehaviour {
 
 	private void Highlight(GameObject underMousGo)
 	{
+		Pawn pawn = underMousGo != null ? underMousGo.GetComponent<Pawn>() : null;
+		if (SelectedPawn != null && pawn == SelectedPawn)
+		{
+			return;
+		}
+
 		if (prevOutline != null)
 		{
 			prevOutline.enabled = false;
@@ -173,5 +221,20 @@ public class PlayerController : MonoBehaviour {
 	private bool IsEnemyPawn(Pawn pawn)
 	{
 		return !Player.IsSamePlayer(pawn.player);
+	}
+
+	private void OnPawnDestroyed(Pawn pawn)
+	{
+		if (IsSoloGame && pawn.player == Players[0])
+		{
+			int nbPawns = gm.Board.Pawns
+				.Where(p => p.player == Players[0])
+				.Count();
+
+			if (nbPawns <= 0)
+			{
+				gm.Loose();
+			}
+		}
 	}
 }
