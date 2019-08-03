@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour {
 			return false;
 		}
 
-		if (selectedPawn == null)
+		if (selectedPawn == null || !selectedPawn.IsTargetReached())
 		{
 			return false;
 		}

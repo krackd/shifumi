@@ -75,7 +75,7 @@ public class Unit : MonoBehaviour
 		}
 	}
 
-	private bool IsTargetReached()
+	public bool IsTargetReached()
 	{
 		return Vector3.SqrMagnitude(transform.position - targetPosition) < TargetReachedThresold;
 	}
